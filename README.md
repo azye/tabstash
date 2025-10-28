@@ -4,7 +4,7 @@ A simple Chrome extension for saving and organizing browser tabs with session ma
 
 ## Features
 
-- **Tab Stashing**: Save all tabs (except extension tabs) with one click
+- **One-Click Tab Stashing**: Save all tabs (except extension tabs) with a single click
 - **Session Management**: Tabs are automatically grouped by save session with timestamps
 - **Tab Restoration**: Click individual tabs to restore them or restore entire sessions
 - **Chrome Page Support**: Treats chrome:// pages like regular tabs (saved and closed)
@@ -20,8 +20,8 @@ A simple Chrome extension for saving and organizing browser tabs with session ma
 ## Usage
 
 ### Basic Usage
-- Click the TabStash icon in your toolbar to save all current tabs and open the manager
-- The extension will save all tabs (except its own) and close them
+- Click the TabStash icon in your toolbar to instantly save all current tabs and open the manager
+- The extension will save all tabs (except its own) and close them with one click
 - Click on any saved tab to reopen it
 - Use "Restore All" buttons to restore entire sessions
 
