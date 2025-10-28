@@ -22,6 +22,7 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 3. **Tab Restoration**: Click saved tabs to reopen them
 4. **Bulk Operations**: Restore entire sessions at once
 5. **Icon Action**: Click extension icon to save tabs and open manager tab
+6. **Chrome Page Handling**: Treats chrome:// pages like regular tabs (saved and closed)
 
 ## File Structure and Responsibilities
 
@@ -42,8 +43,8 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 
 ### background.js
 - Service worker for extension lifecycle
-- **saveAndCloseAllTabs()**: Saves all non-extension tabs and closes them
-- **openTabManager()**: Opens or activates extension tab
+- **saveAndCloseAllTabs()**: Saves all non-extension tabs (including chrome:// pages) and closes them
+- **openTabManager()**: Opens or activates extension tab, reloads existing tab
 - Handles extension installation and action clicks
 
 ## Data Storage
@@ -92,7 +93,7 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 chrome.tabs.query({currentWindow: true}, function(tabs) {
   const extensionUrl = chrome.runtime.getURL('');
   const tabsToSave = tabs.filter(tab => !tab.url.includes(extensionUrl));
-  const extensionTab = tabs.find(tab => tab.url.includes(extensionUrl));
+  // Only extension tabs are excluded, chrome:// pages are treated normally
 });
 ```
 
@@ -115,9 +116,11 @@ chrome.storage.local.get(['savedTabs'], function(result) {
 
 ### Common Issues
 - **Permission errors**: Ensure `tabs` and `storage` permissions in manifest
-- **Extension tab management**: Extension tabs are filtered out from save/close operations
+- **Extension tab management**: Only extension tabs are filtered out from save/close operations
+- **Chrome page handling**: chrome:// pages are treated like regular tabs (saved and closed)
 - **Tab order**: Tabs are closed in reverse order for proper Ctrl+Shift+T restoration
 - **Multiple extension tabs**: Only one extension tab is kept active, others are closed
+- **Tab reload logic**: Extension tab is only reloaded if it already exists
 
 ## Extension Limitations
 
