@@ -1,0 +1,29 @@
+{
+  "name": "tabstash",
+  "version": "1.0.0",
+  "description": "A Chrome extension for saving and organizing browser tabs",
+  "scripts": {
+    "lint": "eslint *.js",
+    "lint:fix": "eslint *.js --fix"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1"
+  },
+  "eslintConfig": {
+    "extends": ["standard"],
+    "env": {
+      "browser": true,
+      "webextensions": true
+    },
+    "globals": {
+      "chrome": "readonly"
+    },
+    "rules": {
+      "no-console": "off"
+    }
+  }
+}
