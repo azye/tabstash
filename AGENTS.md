@@ -17,25 +17,33 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 
 ### Key Features
 
-1. **Tab Stashing**: Save all non-active tabs with session grouping
+1. **Tab Stashing**: Save all tabs (except extension tabs) with session grouping
 2. **Session Management**: Tabs are grouped by save session with timestamps
 3. **Tab Restoration**: Click saved tabs to reopen them
 4. **Bulk Operations**: Restore entire sessions at once
+5. **Icon Action**: Click extension icon to save tabs and open manager tab
 
 ## File Structure and Responsibilities
 
 ### manifest.json
 - Defines extension permissions: `tabs`, `storage`
-- Configures popup action and service worker
+- Configures action handler and service worker
 - Specifies icon sizes: 16px, 48px, 128px
 
-### popup.js (Main Logic)
+### tab.html/tab.js (Main Interface)
+- **loadSavedTabs()**: Displays saved tabs grouped by session
+- **restoreSession()**: Opens all tabs from a saved session
+- Individual tab restoration on click
+
+### popup.js (Legacy Popup)
 - **saveAndCloseAllTabs()**: Saves non-active tabs and closes them
 - **loadSavedTabs()**: Displays saved tabs grouped by session
 - **restoreSession()**: Opens all tabs from a saved session
 
 ### background.js
-- Minimal service worker for extension lifecycle
+- Service worker for extension lifecycle
+- **saveAndCloseAllTabs()**: Saves all non-extension tabs and closes them
+- **openTabManager()**: Opens or activates extension tab
 - Handles extension installation and action clicks
 
 ## Data Storage
@@ -71,17 +79,20 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 ### Chrome Extension APIs Used
 - `chrome.tabs.query()`: Get tab information
 - `chrome.tabs.create()`: Open new tabs
+- `chrome.tabs.update()`: Modify existing tabs
 - `chrome.tabs.remove()`: Close tabs
 - `chrome.storage.local.get/set()`: Persist data
-- `chrome.action.openPopup()`: Open extension popup
+- `chrome.action.onClicked`: Handle extension icon clicks
+- `chrome.runtime.getURL()`: Get extension URLs
 
 ### Common Patterns
 
 #### Tab Query Pattern
 ```javascript
 chrome.tabs.query({currentWindow: true}, function(tabs) {
-  const activeTab = tabs.find(tab => tab.active);
-  const otherTabs = tabs.filter(tab => !tab.active);
+  const extensionUrl = chrome.runtime.getURL('');
+  const tabsToSave = tabs.filter(tab => !tab.url.includes(extensionUrl));
+  const extensionTab = tabs.find(tab => tab.url.includes(extensionUrl));
 });
 ```
 
@@ -104,8 +115,9 @@ chrome.storage.local.get(['savedTabs'], function(result) {
 
 ### Common Issues
 - **Permission errors**: Ensure `tabs` and `storage` permissions in manifest
-- **Popup closing**: Window closes after operations (intended behavior)
+- **Extension tab management**: Extension tabs are filtered out from save/close operations
 - **Tab order**: Tabs are closed in reverse order for proper Ctrl+Shift+T restoration
+- **Multiple extension tabs**: Only one extension tab is kept active, others are closed
 
 ## Extension Limitations
 
