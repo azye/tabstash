@@ -32,10 +32,11 @@ function saveAndCloseAllTabs(callback) {
     chrome.storage.local.get(['savedTabs'], (result) => {
       const savedTabs = result.savedTabs || [];
       savedTabs.unshift(...tabDataArray);
-
+      if (callback) callback();
       chrome.storage.local.set({ savedTabs }, () => {
         // Close all non-extension tabs in reverse order so Ctrl+Shift+T restores them correctly
-        if (callback) callback();
+        
+        
         const tabIdsToClose = tabsToSave.map(tab => tab.id).reverse();
         chrome.tabs.remove(tabIdsToClose);
       });
@@ -53,6 +54,8 @@ function openTabManager() {
         const tabsToClose = tabs.slice(1).map(tab => tab.id);
         chrome.tabs.remove(tabsToClose);
       }
+      // Reload the existing extension tab
+      chrome.tabs.reload(tabs[0].id);
     } else {
       // No extension tab exists, create new one
       chrome.tabs.create({
@@ -60,6 +63,5 @@ function openTabManager() {
         active: true
       });
     }
-    chrome.tabs.reload(tabs[0]?.id);
   });
 }
