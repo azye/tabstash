@@ -76,6 +76,10 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 - Follow existing naming conventions (camelCase)
 - Maintain consistent indentation and formatting
 - Use Chrome extension APIs exclusively
+- **Linting**: ESLint with comprehensive rules for best practices
+- **Lint Scripts**: 
+  - `npm run lint`: Check code style
+  - `npm run lint:fix`: Auto-fix linting issues
 
 ### Chrome Extension APIs Used
 - `chrome.tabs.query()`: Get tab information
@@ -108,11 +112,23 @@ chrome.storage.local.get(['savedTabs'], function(result) {
 
 ## Testing and Debugging
 
+### Automated Testing
+- **Framework**: Jest with jsdom environment
+- **Test Scripts**: 
+  - `npm test`: Run all tests
+  - `npm run test:watch`: Run tests in watch mode
+- **Test Coverage**: Tests cover background script logic, tab interface functionality, and Chrome API interactions
+- **Test Files**:
+  - `tests/background.test.js`: Background service worker tests
+  - `tests/tab.test.js`: Tab interface tests
+  - `tests/setup.js`: Chrome API mocks and test setup
+
 ### Extension Testing
 1. Load unpacked extension in Chrome Developer Mode
 2. Use Chrome DevTools for popup debugging
 3. Check background console for service worker logs
 4. Verify storage in `chrome://extensions/` → Storage inspector
+5. Run automated tests: `npm test`
 
 ### Common Issues
 - **Permission errors**: Ensure `tabs` and `storage` permissions in manifest
@@ -121,6 +137,7 @@ chrome.storage.local.get(['savedTabs'], function(result) {
 - **Tab order**: Tabs are closed in reverse order for proper Ctrl+Shift+T restoration
 - **Multiple extension tabs**: Only one extension tab is kept active, others are closed
 - **Tab reload logic**: Extension tab is only reloaded if it already exists
+- **Test failures**: Ensure Chrome API mocks are properly set up before running tests
 
 ## Extension Limitations
 
