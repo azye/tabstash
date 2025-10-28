@@ -8,9 +8,13 @@ chrome.action.onClicked.addListener(function (tab) {
   })
 })
 
+
+
 function saveAndCloseAllTabs (callback) {
   chrome.tabs.query({ currentWindow: true }, function (tabs) {
-    const tabsToSave = tabs.filter(tab => !tab.url.includes(chrome.runtime.getURL('')))
+    const extensionUrl = chrome.runtime.getURL('')
+    const tabsToSave = tabs.filter(tab => !tab.url.includes(extensionUrl))
+    const extensionTab = tabs.find(tab => tab.url.includes(extensionUrl))
 
     if (tabsToSave.length === 0) {
       if (callback) callback()
@@ -32,12 +36,10 @@ function saveAndCloseAllTabs (callback) {
       savedTabs.unshift(...tabDataArray)
 
       chrome.storage.local.set({ savedTabs }, function () {
-        // Close all tabs (except extension tabs) in reverse order so Ctrl+Shift+T restores them correctly
+        // Close all non-extension tabs in reverse order so Ctrl+Shift+T restores them correctly
+        if (callback) callback()
         const tabIdsToClose = tabsToSave.map(tab => tab.id).reverse()
-        chrome.tabs.remove(tabIdsToClose, function () {
-          // Execute callback after tabs are closed and saved
-          if (callback) callback()
-        })
+        chrome.tabs.remove(tabIdsToClose)
       })
     })
   })
@@ -45,23 +47,21 @@ function saveAndCloseAllTabs (callback) {
 
 function openTabManager () {
   chrome.tabs.query({ url: chrome.runtime.getURL('tab.html') }, function (tabs) {
-    if (tabs.length > 1) {
-      // Multiple tabs exist, close all but the first one
-      const tabsToClose = tabs.slice(1).map(tab => tab.id)
-      chrome.tabs.remove(tabsToClose, function () {
-        // Refresh the remaining tab
-        chrome.tabs.reload(tabs[0].id)
-      })
-    } else if (tabs.length === 1) {
-      // One tab exists, refresh it
-      chrome.tabs.reload(tabs[0].id)
+    if (tabs.length > 0) {
+      // Extension tab exists, make it active
+      chrome.tabs.update(tabs[0].id, { active: true })
+      // Close any additional extension tabs
+      if (tabs.length > 1) {
+        const tabsToClose = tabs.slice(1).map(tab => tab.id)
+        chrome.tabs.remove(tabsToClose)
+      }
     } else {
-      // No tabs exist, create new one
+      // No extension tab exists, create new one
       chrome.tabs.create({
         url: chrome.runtime.getURL('tab.html'),
-        active: false,
-        pinned: true
+        active: true
       })
     }
+    chrome.tabs.reload(tabs[0].id)
   })
 }
