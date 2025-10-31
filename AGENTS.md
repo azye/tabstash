@@ -21,8 +21,11 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 2. **Session Management**: Tabs are grouped by save session with timestamps
 3. **Tab Restoration**: Click saved tabs to reopen them
 4. **Bulk Operations**: Restore entire sessions at once
-5. **Icon Action**: Click extension icon to save tabs and open manager tab
-6. **Chrome Page Handling**: Treats chrome:// pages like regular tabs (saved and closed)
+5. **Clear All Tabs**: Remove all saved tabs at once with confirmation
+6. **Tab Counter**: Display total count of saved tabs in the interface
+7. **Icon Action**: Click extension icon to save tabs and open manager tab
+8. **Chrome Page Handling**: Treats chrome:// pages like regular tabs (saved and closed)
+9. **Fire Icon**: Visual representation using flame/fire icon for tab stashing concept
 
 ## File Structure and Responsibilities
 
@@ -32,14 +35,22 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 - Specifies icon sizes: 16px, 48px, 128px
 
 ### tab.html/tab.js (Main Interface)
-- **loadSavedTabs()**: Displays saved tabs grouped by session
+- **loadSavedTabs()**: Displays saved tabs grouped by session, updates tab counter
 - **restoreSession()**: Opens all tabs from a saved session
+- **clearAllTabs()**: Removes all saved tabs from storage
 - Individual tab restoration on click
+- **Tab Counter Display**: Shows total count of saved tabs in header
 
 ### popup.js (Legacy Popup)
 - **saveAndCloseAllTabs()**: Saves non-active tabs and closes them
 - **loadSavedTabs()**: Displays saved tabs grouped by session
 - **restoreSession()**: Opens all tabs from a saved session
+
+### icons/
+- **icon.svg**: Main SVG icon (fire/flame design)
+- **icon16.png**: 16x16 pixel PNG version for toolbar
+- **icon48.png**: 48x48 pixel PNG version for extension management
+- **icon128.png**: 128x128 pixel PNG version for Chrome Web Store
 
 ### background.js
 - Service worker for extension lifecycle
@@ -130,6 +141,15 @@ chrome.storage.local.get(['savedTabs'], function(result) {
   // Modify savedTabs
   chrome.storage.local.set({savedTabs: savedTabs}, callback);
 });
+```
+
+#### UI Update Pattern
+```javascript
+// Update tab counter
+savedTabsCount.textContent = savedTabs.length;
+
+// Show user feedback
+showMessage(`Saved ${otherTabs.length} tabs successfully!`);
 ```
 
 ## Testing and Debugging

@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const saveBtn = document.getElementById('saveAllTabs');
   const clearBtn = document.getElementById('clearAllTabs');
   const tabList = document.getElementById('tabList');
+  const savedTabsCount = document.getElementById('savedTabsCount');
 
   saveBtn.addEventListener('click', saveAndCloseAllTabs);
   clearBtn.addEventListener('click', clearAllTabs);
@@ -62,6 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.get(['savedTabs'], (result) => {
       const savedTabs = result.savedTabs || [];
       tabList.innerHTML = '';
+      
+      // Update the count
+      savedTabsCount.textContent = savedTabs.length;
 
       if (savedTabs.length === 0) {
         tabList.innerHTML = '<div class="empty-state">No saved tabs yet. Click the button above to save your tabs!</div>';
