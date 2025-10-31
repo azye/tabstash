@@ -25,7 +25,7 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 6. **Tab Counter**: Display total count of saved tabs in the interface
 7. **Icon Action**: Click extension icon to save tabs and open manager tab
 8. **Chrome Page Handling**: Treats chrome:// pages like regular tabs (saved and closed)
-9. **Fire Icon**: Visual representation using flame/fire icon for tab stashing concept
+9. **Fire Icon**: Visual representation using detailed fire/torch icon with red/orange colors and green base for tab stashing concept
 
 ## File Structure and Responsibilities
 
@@ -47,7 +47,7 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 - **restoreSession()**: Opens all tabs from a saved session
 
 ### icons/
-- **icon.svg**: Main SVG icon (fire/flame design)
+- **icon.svg**: Main SVG icon (detailed fire/torch design with red/orange colors and green base)
 - **icon16.png**: 16x16 pixel PNG version for toolbar
 - **icon48.png**: 48x48 pixel PNG version for extension management
 - **icon128.png**: 128x128 pixel PNG version for Chrome Web Store
