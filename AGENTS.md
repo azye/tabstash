@@ -69,6 +69,23 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 - Individual tabs (legacy format) may not have `sessionId`
 - Sessions display with count and timestamp
 
+## Development Setup
+
+### Initial Setup
+```bash
+npm install
+```
+
+### Available Scripts
+- `npm run lint` - Check code style with ESLint
+- `npm run lint:fix` - Auto-fix linting issues
+- `npm test` - Run all Jest tests
+- `npm run test:watch` - Run tests in watch mode
+
+### Dependencies
+- **Dev Dependencies**: Jest, ESLint with standard config, jsdom environment
+- **No Runtime Dependencies**: Uses only Chrome extension APIs
+
 ## Development Guidelines
 
 ### Code Style
@@ -76,10 +93,15 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 - Follow existing naming conventions (camelCase)
 - Maintain consistent indentation and formatting
 - Use Chrome extension APIs exclusively
-- **Linting**: ESLint with comprehensive rules for best practices
+- **Linting**: ESLint with standard configuration and comprehensive rules
 - **Lint Scripts**: 
   - `npm run lint`: Check code style
   - `npm run lint:fix`: Auto-fix linting issues
+- **ESLint Configuration**: 
+  - Extends standard config with webextensions environment
+  - Enforces single quotes, 2-space indentation, semicolons
+  - ES2021 syntax support, arrow functions preferred
+  - Console logging allowed, camelcase disabled
 
 ### Chrome Extension APIs Used
 - `chrome.tabs.query()`: Get tab information
@@ -118,6 +140,10 @@ chrome.storage.local.get(['savedTabs'], function(result) {
   - `npm test`: Run all tests
   - `npm run test:watch`: Run tests in watch mode
 - **Test Coverage**: Tests cover background script logic, tab interface functionality, and Chrome API interactions
+- **Test Configuration**:
+  - Collects coverage from all JS files except tests and config
+  - Uses setup file for Chrome API mocks
+  - Tests located in `tests/` directory with `.test.js` pattern
 - **Test Files**:
   - `tests/background.test.js`: Background service worker tests
   - `tests/tab.test.js`: Tab interface tests
@@ -138,6 +164,8 @@ chrome.storage.local.get(['savedTabs'], function(result) {
 - **Multiple extension tabs**: Only one extension tab is kept active, others are closed
 - **Tab reload logic**: Extension tab is only reloaded if it already exists
 - **Test failures**: Ensure Chrome API mocks are properly set up before running tests
+- **Linting errors**: Run `npm run lint:fix` to auto-fix common formatting issues
+- **ESLint configuration**: Uses .eslintrc.js file with standard config and webextensions environment
 
 ## Extension Limitations
 
