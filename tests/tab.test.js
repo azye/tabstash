@@ -5,7 +5,7 @@ document.body.innerHTML = `
 `;
 
 // Load the tab script
-require('../tab.js');
+require('../src/tab.js');
 
 describe('Tab Interface', () => {
   beforeEach(() => {

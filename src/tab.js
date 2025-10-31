@@ -62,6 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // Show confirmation dialog
+      const confirmed = confirm(
+        `Are you sure you want to clear all ${savedTabs.length} saved tabs? This action cannot be undone.`
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
       chrome.storage.local.set({ savedTabs: [] }, () => {
         loadSavedTabs();
         showMessage(`Cleared ${savedTabs.length} saved tabs!`);
@@ -105,11 +114,17 @@ document.addEventListener('DOMContentLoaded', () => {
           sessionHeader.className = 'session-header';
           sessionHeader.innerHTML = `
             <span>Session (${sessionTabs.length} tabs) - ${new Date(sessionTabs[0].timestamp).toLocaleString()}</span>
-            <button class="restore-all-btn">Restore All</button>
+            <div>
+              <button class="delete-session-btn">Delete Session</button>
+              <button class="restore-all-btn">Restore All</button>
+            </div>
           `;
 
           const restoreAllBtn = sessionHeader.querySelector('.restore-all-btn');
           restoreAllBtn.onclick = () => restoreSession(sessionTabs);
+
+          const deleteSessionBtn = sessionHeader.querySelector('.delete-session-btn');
+          deleteSessionBtn.onclick = () => deleteSession(sessionId);
 
           sessionElement.appendChild(sessionHeader);
 
@@ -155,6 +170,33 @@ document.addEventListener('DOMContentLoaded', () => {
       chrome.tabs.create({ url: tab.url });
     });
     showMessage(`Restored ${sessionTabs.length} tabs!`);
+  }
+
+  // Delete a session and all its tabs
+  function deleteSession(sessionId) {
+    chrome.storage.local.get(['savedTabs'], (result) => {
+      const savedTabs = result.savedTabs || [];
+      const originalLength = savedTabs.length;
+      
+      // Remove tabs with the specified sessionId
+      const updatedTabs = savedTabs.filter(tab => {
+        if (sessionId === 'individual') {
+          // For individual tabs, remove those without sessionId
+          return tab.sessionId !== undefined;
+        } else {
+          // For session groups, remove tabs with matching sessionId
+          // Convert both to string for proper comparison
+          return String(tab.sessionId) !== String(sessionId);
+        }
+      });
+      
+      const deletedCount = originalLength - updatedTabs.length;
+      
+      chrome.storage.local.set({ savedTabs: updatedTabs }, () => {
+        loadSavedTabs();
+        showMessage(`Deleted session with ${deletedCount} tabs!`);
+      });
+    });
   }
 
   // Show temporary notification message

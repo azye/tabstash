@@ -54,7 +54,7 @@ function saveAndCloseAllTabs(callback) {
 
 // Open or activate the tab manager interface
 function openTabManager() {
-  chrome.tabs.query({ url: chrome.runtime.getURL('tab.html') }, (tabs) => {
+  chrome.tabs.query({ url: chrome.runtime.getURL('../pages/tab.html') }, (tabs) => {
     if (tabs.length > 0) {
       // Extension tab exists, make it active
       chrome.tabs.update(tabs[0].id, { active: true });
@@ -68,7 +68,7 @@ function openTabManager() {
     } else {
       // No extension tab exists, create new one
       chrome.tabs.create({
-        url: chrome.runtime.getURL('tab.html'),
+        url: chrome.runtime.getURL('../pages/tab.html'),
         active: true,
         pinned: true
       });
