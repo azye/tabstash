@@ -11,8 +11,14 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 ### Core Components
 
 - **manifest.json**: Extension configuration (Manifest V3)
-- **popup.html/popup.js**: Main user interface and logic
-- **background.js**: Service worker for extension lifecycle
+- **src/**: JavaScript source files
+  - **background.js**: Service worker for extension lifecycle
+  - **tab.js**: Main tab interface with full functionality
+  - **popup.js**: Legacy popup interface
+- **pages/**: HTML pages
+  - **tab.html**: Main tab manager interface
+  - **popup.html**: Legacy popup interface
+  - **privacy.html**: Privacy policy page
 - **icons/**: Extension icons in various sizes
 
 ### Key Features
@@ -21,28 +27,50 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 2. **Session Management**: Tabs are grouped by save session with timestamps
 3. **Tab Restoration**: Click saved tabs to reopen them
 4. **Bulk Operations**: Restore entire sessions at once
-5. **Clear All Tabs**: Remove all saved tabs at once with confirmation
-6. **Tab Counter**: Display total count of saved tabs in the interface
-7. **Icon Action**: Click extension icon to save tabs and open manager tab
-8. **Chrome Page Handling**: Treats chrome:// pages like regular tabs (saved and closed)
-9. **Fire Icon**: Visual representation using detailed fire/torch icon with red/orange colors and green base for tab stashing concept
+5. **Delete Sessions**: Remove individual sessions with red delete button
+6. **Clear All Tabs**: Remove all saved tabs at once with confirmation
+7. **Tab Counter**: Display total count of saved tabs in the interface
+8. **Icon Action**: Click extension icon to save tabs and open manager tab
+9. **Chrome Page Handling**: Treats chrome:// pages like regular tabs (saved and closed)
+10. **Fire Icon**: Visual representation using detailed fire/torch icon with red/orange colors and green base for tab stashing concept
 
 ## File Structure and Responsibilities
 
+### Project Structure
+```
+tabstash/
+├── src/                    # JavaScript source files
+│   ├── background.js       # Service worker
+│   ├── popup.js           # Legacy popup interface
+│   └── tab.js             # Main tab interface
+├── pages/                  # HTML pages
+│   ├── popup.html         # Legacy popup interface
+│   ├── tab.html           # Main tab manager
+│   └── privacy.html       # Privacy policy
+├── icons/                  # Extension icons
+├── tests/                  # Test suite
+├── manifest.json          # Extension manifest
+└── tabstash-extension.zip # Production package
+```
+
 ### manifest.json
 - Defines extension permissions: `tabs`, `storage`
-- Configures action handler and service worker
-- Specifies icon sizes: 16px, 48px, 128px
+- Configures action handler and service worker (src/background.js)
+- Specifies icon sizes: 16px, 32px, 48px, 128px
 - Web Store fields: `homepage_url`, `author`, `privacy_policy_url`
 
-### tab.html/tab.js (Main Interface)
+### pages/tab.html & src/tab.js (Main Interface)
 - **loadSavedTabs()**: Displays saved tabs grouped by session, updates tab counter
 - **restoreSession()**: Opens all tabs from a saved session
+- **deleteSession()**: Removes specific session and all its tabs from storage
 - **clearAllTabs()**: Removes all saved tabs from storage
+- **createTabElement()**: Creates DOM element for individual tab display
+- **showMessage()**: Displays temporary notification messages
+- **escapeHtml()**: Prevents XSS attacks by escaping HTML
 - Individual tab restoration on click
 - **Tab Counter Display**: Shows total count of saved tabs in header
 
-### popup.js (Legacy Popup)
+### pages/popup.html & src/popup.js (Legacy Popup)
 - **saveAndCloseAllTabs()**: Saves non-active tabs and closes them
 - **loadSavedTabs()**: Displays saved tabs grouped by session
 - **restoreSession()**: Opens all tabs from a saved session
@@ -53,12 +81,12 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 - **icon48.png**: 48x48 pixel PNG version for extension management
 - **icon128.png**: 128x128 pixel PNG version for Chrome Web Store
 
-### privacy.html
+### pages/privacy.html
 - Privacy policy page required for Google Web Store submission
 - Explains data collection, storage, and privacy practices
 - Hosted on GitHub and referenced in manifest.json
 
-### background.js
+### src/background.js
 - Service worker for extension lifecycle
 - **saveAndCloseAllTabs()**: Saves all non-extension tabs (including chrome:// pages) and closes them
 - **openTabManager()**: Opens or activates extension tab, reloads existing tab
@@ -149,6 +177,27 @@ chrome.storage.local.get(['savedTabs'], function(result) {
 });
 ```
 
+#### Session Management Pattern
+```javascript
+// Group tabs by session
+const sessions = {};
+savedTabs.forEach(tab => {
+  const sessionId = tab.sessionId || 'individual';
+  if (!sessions[sessionId]) {
+    sessions[sessionId] = [];
+  }
+  sessions[sessionId].push(tab);
+});
+
+// Delete specific session
+function deleteSession(sessionId) {
+  const updatedTabs = savedTabs.filter(tab => 
+    String(tab.sessionId) !== String(sessionId)
+  );
+  chrome.storage.local.set({ savedTabs: updatedTabs }, callback);
+}
+```
+
 #### UI Update Pattern
 ```javascript
 // Update tab counter
@@ -156,6 +205,16 @@ savedTabsCount.textContent = savedTabs.length;
 
 // Show user feedback
 showMessage(`Saved ${otherTabs.length} tabs successfully!`);
+
+// Create tab element with XSS protection
+function createTabElement(tab) {
+  const tabElement = document.createElement('div');
+  tabElement.innerHTML = `
+    <div class="tab-title">${escapeHtml(tab.title)}</div>
+    <div class="tab-url">${escapeHtml(tab.url)}</div>
+  `;
+  return tabElement;
+}
 ```
 
 ## Testing and Debugging
