@@ -1,3 +1,11 @@
+/**
+ * TabStash Chrome Extension - Background Service Worker
+ *
+ * Handles extension lifecycle, tab management, and storage operations.
+ * This service worker runs when the extension is installed or when the
+ * extension icon is clicked.
+ */
+
 // Extension lifecycle: handle installation
 chrome.runtime.onInstalled.addListener(() => {
   console.log('TabStash extension installed');

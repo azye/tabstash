@@ -1,3 +1,11 @@
+/**
+ * TabStash Chrome Extension - Main Tab Interface
+ *
+ * Primary interface for managing saved tabs and sessions.
+ * Provides full functionality including saving, restoring, clearing,
+ * and organizing tabs with session management and user feedback.
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
   const saveBtn = document.getElementById('saveAllTabs');
   const clearBtn = document.getElementById('clearAllTabs');

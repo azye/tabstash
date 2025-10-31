@@ -1,3 +1,11 @@
+/**
+ * TabStash Chrome Extension - Popup Interface
+ *
+ * Legacy popup interface for saving and managing tabs.
+ * Provides quick access to save functionality and displays saved tabs.
+ * Note: Main interface is now tab.html for better UX.
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
   const saveBtn = document.getElementById('saveAllTabs');
   const tabList = document.getElementById('tabList');
