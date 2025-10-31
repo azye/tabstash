@@ -60,7 +60,8 @@ function openTabManager() {
       // No extension tab exists, create new one
       chrome.tabs.create({
         url: chrome.runtime.getURL('tab.html'),
-        active: true
+        active: true,
+        pinned: true,
       });
     }
   });

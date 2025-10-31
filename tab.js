@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   const saveBtn = document.getElementById('saveAllTabs');
+  const clearBtn = document.getElementById('clearAllTabs');
   const tabList = document.getElementById('tabList');
 
   saveBtn.addEventListener('click', saveAndCloseAllTabs);
+  clearBtn.addEventListener('click', clearAllTabs);
   loadSavedTabs();
 
   function saveAndCloseAllTabs() {
@@ -36,6 +38,22 @@ document.addEventListener('DOMContentLoaded', () => {
             showMessage(`Saved ${otherTabs.length} tabs successfully!`);
           });
         });
+      });
+    });
+  }
+
+  function clearAllTabs() {
+    chrome.storage.local.get(['savedTabs'], (result) => {
+      const savedTabs = result.savedTabs || [];
+      
+      if (savedTabs.length === 0) {
+        showMessage('No saved tabs to clear!');
+        return;
+      }
+
+      chrome.storage.local.set({ savedTabs: [] }, () => {
+        loadSavedTabs();
+        showMessage(`Cleared ${savedTabs.length} saved tabs!`);
       });
     });
   }

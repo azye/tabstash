@@ -33,8 +33,10 @@
       color: #666;
       margin: 10px 0 0 0;
     }
-    .save-section {
-      text-align: center;
+    .button-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 30px;
     }
     .save-btn {
@@ -50,6 +52,20 @@
     }
     .save-btn:hover {
       background-color: #3367d6;
+    }
+    .clear-btn {
+      padding: 15px 30px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    .clear-btn:hover {
+      background-color: #c82333;
     }
     .saved-tabs-section {
       margin-top: 30px;
@@ -126,8 +142,9 @@
       <p>Save and organize your browser tabs</p>
     </div>
     
-    <div class="save-section">
+    <div class="button-section">
       <button class="save-btn" id="saveAllTabs">Save & Close All Other Tabs</button>
+      <button class="clear-btn" id="clearAllTabs">Clear All Tabs</button>
     </div>
     
     <div class="saved-tabs-section">
