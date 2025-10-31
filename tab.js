@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   clearBtn.addEventListener('click', clearAllTabs);
   loadSavedTabs();
 
+  // Save all non-active tabs and close them
   function saveAndCloseAllTabs() {
     chrome.tabs.query({ currentWindow: true }, (tabs) => {
       const otherTabs = tabs.filter(tab => !tab.active);
@@ -43,10 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Clear all saved tabs from storage
   function clearAllTabs() {
     chrome.storage.local.get(['savedTabs'], (result) => {
       const savedTabs = result.savedTabs || [];
-      
+
       if (savedTabs.length === 0) {
         showMessage('No saved tabs to clear!');
         return;
@@ -59,11 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Load and display saved tabs grouped by session
   function loadSavedTabs() {
     chrome.storage.local.get(['savedTabs'], (result) => {
       const savedTabs = result.savedTabs || [];
       tabList.innerHTML = '';
-      
+
       // Update the count
       savedTabsCount.textContent = savedTabs.length;
 
@@ -122,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Create DOM element for a single tab
   function createTabElement(tab) {
     const tabElement = document.createElement('div');
     tabElement.className = 'tab-item';
@@ -137,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return tabElement;
   }
 
+  // Restore all tabs in a session
   function restoreSession(sessionTabs) {
     sessionTabs.forEach(tab => {
       chrome.tabs.create({ url: tab.url });
@@ -144,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showMessage(`Restored ${sessionTabs.length} tabs!`);
   }
 
+  // Show temporary notification message
   function showMessage(message) {
     // Create a temporary message element
     const messageDiv = document.createElement('div');
@@ -170,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
   }
 
+  // Escape HTML to prevent XSS
   function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;

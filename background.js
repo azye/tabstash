@@ -1,14 +1,16 @@
+// Extension lifecycle: handle installation
 chrome.runtime.onInstalled.addListener(() => {
   console.log('TabStash extension installed');
 });
 
+// Handle extension icon click: save tabs and open manager
 chrome.action.onClicked.addListener((tab) => {
   saveAndCloseAllTabs(() => {
     openTabManager();
   });
 });
 
-
+// Save all non-extension tabs to storage and close them
 function saveAndCloseAllTabs(callback) {
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     const extensionUrl = chrome.runtime.getURL('');
@@ -35,8 +37,6 @@ function saveAndCloseAllTabs(callback) {
       if (callback) callback();
       chrome.storage.local.set({ savedTabs }, () => {
         // Close all non-extension tabs in reverse order so Ctrl+Shift+T restores them correctly
-        
-        
         const tabIdsToClose = tabsToSave.map(tab => tab.id).reverse();
         chrome.tabs.remove(tabIdsToClose);
       });
@@ -44,6 +44,7 @@ function saveAndCloseAllTabs(callback) {
   });
 }
 
+// Open or activate the tab manager interface
 function openTabManager() {
   chrome.tabs.query({ url: chrome.runtime.getURL('tab.html') }, (tabs) => {
     if (tabs.length > 0) {
@@ -61,7 +62,7 @@ function openTabManager() {
       chrome.tabs.create({
         url: chrome.runtime.getURL('tab.html'),
         active: true,
-        pinned: true,
+        pinned: true
       });
     }
   });

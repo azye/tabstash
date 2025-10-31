@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   saveBtn.addEventListener('click', saveAndCloseAllTabs);
   loadSavedTabs();
 
+  // Save all non-active tabs and close them
   function saveAndCloseAllTabs() {
     chrome.tabs.query({ currentWindow: true }, (tabs) => {
       const otherTabs = tabs.filter(tab => !tab.active);
@@ -35,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Load and display saved tabs grouped by session
   function loadSavedTabs() {
     chrome.storage.local.get(['savedTabs'], (result) => {
       const savedTabs = result.savedTabs || [];
@@ -112,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Restore all tabs in a session
   function restoreSession(sessionTabs) {
     // Open tabs in the same order they were originally in
     sessionTabs.forEach(tab => {

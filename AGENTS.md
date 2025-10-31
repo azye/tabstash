@@ -33,6 +33,7 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 - Defines extension permissions: `tabs`, `storage`
 - Configures action handler and service worker
 - Specifies icon sizes: 16px, 48px, 128px
+- Web Store fields: `homepage_url`, `author`, `privacy_policy_url`
 
 ### tab.html/tab.js (Main Interface)
 - **loadSavedTabs()**: Displays saved tabs grouped by session, updates tab counter
@@ -47,10 +48,15 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 - **restoreSession()**: Opens all tabs from a saved session
 
 ### icons/
-- **icon.svg**: Main SVG icon (detailed fire/torch design with red/orange colors and green base)
 - **icon16.png**: 16x16 pixel PNG version for toolbar
+- **icon32.png**: 32x32 pixel PNG version for toolbar
 - **icon48.png**: 48x48 pixel PNG version for extension management
 - **icon128.png**: 128x128 pixel PNG version for Chrome Web Store
+
+### privacy.html
+- Privacy policy page required for Google Web Store submission
+- Explains data collection, storage, and privacy practices
+- Hosted on GitHub and referenced in manifest.json
 
 ### background.js
 - Service worker for extension lifecycle
@@ -214,3 +220,25 @@ When considering new features, maintain:
 - Designed for Chrome/Chromium browsers
 - Manifest V3 required
 - Modern JavaScript features (ES6+) acceptable
+
+## Google Web Store Submission
+
+### Preparation Checklist
+- ✅ Updated manifest.json with required fields (`homepage_url`, `author`, `privacy_policy_url`)
+- ✅ Created privacy policy page (`privacy.html`)
+- ✅ Minimal permissions (`tabs`, `storage`)
+- ✅ All tests passing (19/19)
+- ✅ Code linted and formatted
+- ✅ Created ZIP package (`tabstash-extension.zip`)
+- ⚠️ Screenshots needed (1280x800 or 640x400)
+
+### Store Listing Materials
+- Short description: "Save and organize browser tabs with smart session management."
+- Detailed description and features available in `STORE_LISTING.md`
+- Category: Productivity
+- Price: Free
+
+### Required Files for Submission
+- `tabstash-extension.zip` - Extension package
+- Screenshots showing extension interface
+- Store listing information from `STORE_LISTING.md`
